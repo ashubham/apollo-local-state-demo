@@ -5,13 +5,21 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "graphql-codegen",
+    "no": "graphql-codegen --config codegen.yml"
   },
   "author": "Peggy Rayzis",
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.4.8",
     "graphql": "^14.2.1",
-    "node-fetch": "^2.3.0"
+    "node-fetch": "^2.3.0",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "@graphql-codegen/typescript": "1.11.2",
+    "@graphql-codegen/typescript-operations": "^1.11.2",
+    "@graphql-codegen/introspection": "1.11.2"
   }
 }

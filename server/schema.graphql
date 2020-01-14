@@ -1,0 +1,74 @@
+type Query {
+  resultSet(searchText: String!): ResultSet
+  board(id: ID!): Board
+}
+
+type Mutation {
+  createBoard: Board
+  addPhotosToBoard(input: AddPhotosToBoardInput!): AddPhotosToBoardPayload
+  updateBoardLayout(input: UpdateBoardLayoutInput!): UpdateBoardLayoutPayload
+}
+
+type ResultSet {
+  photos: [Photo]!
+}
+
+type Photo {
+  id: ID!
+  owner: String!
+  secret: String!
+  server: Int!
+  farm: Int!
+  title: String!
+  ispublic: Int!
+  isfriend: Int!
+  isfamily: Int!
+}
+
+enum TileSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+type Tile {
+  photo: Photo!
+  size: TileSize!
+}
+
+type Board {
+  id: ID!
+  tiles: [Tile!]!
+}
+
+input AddPhotosToBoardInput {
+  id: ID!
+  photos: [PhotoInput!]!
+}
+
+input PhotoInput {
+  id: ID!
+  owner: String!
+  secret: String!
+  server: Int!
+  farm: Int!
+  title: String!
+}
+
+type AddPhotosToBoardPayload {
+  board: Board
+}
+
+input UpdateBoardLayoutInput {
+  id: ID!
+  tileChanges: [TileChange!]!
+}
+
+input TileChange {
+  id: ID!
+  size: TileSize
+}
+
+type UpdateBoardLayoutPayload {
+  board: Board
+}

@@ -1,78 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { QueryResult } from '@apollo/react-common';
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+import { useMutation } from '@apollo/react-hooks';
+import { CREATE_BOARD } from './services/board-service';
 
-import Picker from './components/Picker';
-import Posts from './components/Posts';
+import { appContext } from './AppContext';
+import { LeftPanel } from './components/left-panel';
+import { Board } from './components/board';
 
-import * as ApolloTypes from './__generated__/GetSubreddit';
-
-const clientSchema = gql`
-  extend type Subreddit {
-    lastUpdated: String!
-  }
-`;
-
-const resolvers = {
-  Subreddit: {
-    lastUpdated: () => new Date(Date.now()).toLocaleTimeString(),
-  },
-};
-
-const GET_SUBREDDIT = gql`
-  query GetSubreddit($name: String!) {
-    subreddit(name: $name) {
-      posts {
-        title
-      }
-      lastUpdated @client
-    }
-  }
-`;
 
 const App: React.FC = () => {
-  const [selectedSubreddit, setSelectedSubreddit] = useState('reactjs');
-  const {
-    data,
-    loading,
-    error,
-    refetch,
-    networkStatus,
-    client,
-  }: QueryResult<
-    ApolloTypes.GetSubreddit,
-    ApolloTypes.GetSubredditVariables
-  > = useQuery(GET_SUBREDDIT, {
-    variables: { name: selectedSubreddit },
-    notifyOnNetworkStatusChange: true,
-  });
-
-  client.addResolvers(resolvers);
-
-  const refetching = networkStatus === 4;
-
-  if (loading && !refetching) return <h2>Loading...</h2>;
-  if (error) return <h2>{`Error: ${error}`}</h2>;
+  let [createBoard, {data}] = useMutation(CREATE_BOARD);
+  useEffect(() => {
+      createBoard();
+  }, []);
 
   return (
-    <div>
-      <Picker
-        value={selectedSubreddit}
-        onChange={setSelectedSubreddit}
-        options={['reactjs', 'frontend']}
-      />
-      <p>
-        <span>
-          {data &&
-            `Last updated at ${data.subreddit && data.subreddit.lastUpdated}.`}
-        </span>
-        {!loading && <button onClick={() => refetch()}>Refresh</button>}
-      </p>
-      <div style={{ opacity: refetching ? 0.5 : 1 }}>
-        <Posts posts={data && data.subreddit ? data.subreddit.posts : []} />
-      </div>
-    </div>
+    <appContext.Provider value={{boardId: data?.createBoard.id}}>
+      {(data?.createBoard.id) ? (<div style={{ display: 'flex' }}>
+        <LeftPanel></LeftPanel>
+        <Board></Board>
+      </div>): ''}
+    </appContext.Provider>
   );
 };
 
