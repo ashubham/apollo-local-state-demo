@@ -48,7 +48,7 @@ const typeDefs = gql`
   }
 
   input AddPhotosToBoardInput {
-    boardId: ID!
+    id: ID!
     photos: [PhotoInput!]!
   }
 
@@ -59,7 +59,6 @@ const typeDefs = gql`
     server: Int!
     farm: Int!
     title: String!
-    bla: String
   }
 
   type AddPhotosToBoardPayload {
