@@ -1,26 +1,34 @@
 import React, { useEffect, useContext } from 'react';
-import { QueryResult } from '@apollo/react-common';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/client';
 import { GET_BOARD } from '../../services/board-service';
 import { Board } from './Board';
-import { appContext } from '../../AppContext';
+import { useSessionStore } from '../../contexts/sessionStore';
+import { Typography } from '@material-ui/core';
 
-type Props = {}
+type Props = {
+    className?: string;
+}
 
-export const BoardContainer: React.FC<Props> = () => {
-    let { boardId } = useContext(appContext);
+export const BoardContainer: React.FC<Props> = ({ ...props }) => {
+    let { boardId } = useSessionStore();
+
     let { data, error, loading } = useQuery(GET_BOARD, {
         variables: { id: boardId }
     });
 
-    if (loading) return <div>Loading Board ...</div>;
+    if (loading || !data.board) return <Typography>Loading Board ...</Typography>;
     if (error) {
-        console.error(error);
-        return <div>Board Error ..</div>;
+        return <Typography>Board Error ..</Typography>;
     }
 
-    return (<div style={{marginLeft: '20px'}}>
-        <b>The Board</b>
-        {data?.board?.tiles.map(tile => <div key={tile.photo.id}>{tile.imageUrl}</div>)}
-    </div>)
+    if (!data?.board.tiles.length) {
+        return <Typography variant='h5'
+            className='board-container'
+            color='textSecondary'>Empty Board</Typography>
+    }
+
+    return (
+        <Board name={data.board.name}
+            tiles={data?.board?.tiles} onLayout={() => { }}></Board>
+    )
 }

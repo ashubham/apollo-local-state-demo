@@ -1,0 +1,48 @@
+.app {
+  display: flex;
+  flex: 1 1 0;
+}
+
+.board-container {
+  margin-left: 20px;
+}
+
+body {
+  background-color: #f6f8fa;
+  margin: 0;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.page {
+    padding: 20px;
+    display: flex;
+    flex: 1 1 0;
+}
+
+.home {
+    display: flex;
+    flex: 1 1 0;
+}
+
+.alert {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  height: 24px;
+  align-items: center;
+}
+
+.alert.warning {
+  color: #333;
+  background-color: #fcd976;
+}
+
+.alert.error {
+  color: #fff;
+  background-color: #f47d89;
+}

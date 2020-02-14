@@ -1,14 +1,16 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+import { ApolloProvider, gql } from '@apollo/client';
+import { SessionContextProvider } from './contexts/sessionStore';
 
 import App from './App';
 import { client } from './apollo-client';
 
 render(
   <ApolloProvider client={client}>
-    <App />
+    <SessionContextProvider>
+      <App />
+    </SessionContextProvider>
   </ApolloProvider>,
   document.getElementById('root'),
 );

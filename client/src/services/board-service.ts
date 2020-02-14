@@ -1,11 +1,14 @@
+import { Reference } from '@apollo/client';
 import { client } from '../apollo-client';
-import { gql } from 'apollo-boost';
+import { gql } from '@apollo/client';
+import { prettyTimeAgo } from '../util/util';
 
 /****** Queries  ****/
 export const GET_BOARD = gql`
 query GetBoard($id: ID!) {
         board(id: $id) {
             id
+            name
             tiles {
                 size
                 id
@@ -19,6 +22,18 @@ query GetBoard($id: ID!) {
                 }
                 imageUrl @client
             }
+        }
+    }
+`;
+
+export const GET_BOARDS = gql`
+    query GetBoards {
+        getBoards {
+            id
+            name
+            owner
+            modified
+            modifiedTimeAgo @client
         }
     }
 `;
@@ -41,10 +56,8 @@ export const ADD_PHOTOS_TO_BOARD = gql`
                 id
                 photo {
                   id
-                  owner
                 }
                 size
-                imageUrl @client
             }
         }
       }
@@ -57,12 +70,31 @@ const clientSchema = gql`
     }
 `;
 
-const resolvers = {
-  Tile: {
-    imageUrl: (tile, args, context, info) => {
-      return `http://${tile.photo.id}-${tile.photo.owner}`;
+client.cache.policies.addTypePolicies({
+    Tile: {
+        fields: {
+            imageUrl: {
+                read(url, { args, readField }) {
+                    const photo = readField('photo') as Reference;
+                    const farm = readField('farm', photo);
+                    const id = readField('id', photo);
+                    const server = readField('server', photo);
+                    const secret = readField('secret', photo);
+                    const size = readField('size');
+                    return `https://farm${farm}.staticflickr.com/${server}/${id}_${secret}.png`;
+                }
+            }
+        }
     },
-  },
-};
-
-client.addResolvers(resolvers);
+    Board: {
+        fields: {
+            modifiedTimeAgo: {
+                read(date, { args, readField }) {
+                    const modified = Number(readField('modified'));
+                    const diffMills = Date.now() - modified;
+                    return prettyTimeAgo(diffMills);
+                }
+            }
+        }
+    }
+});

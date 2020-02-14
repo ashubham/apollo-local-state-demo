@@ -1,33 +1,35 @@
 import React, { useState, useRef, useEffect } from 'react';
-import reactPackery from 'react-packery-component';
+import { Responsive, WidthProvider } from 'react-grid-layout';
 import { Tile } from '../tile/Tile';
+import { Typography } from '@material-ui/core';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+import './Board.scss';
 
-const Packery = reactPackery(React);
-
-const packeryOptions = {
-    transitionDuration: 0
-};
+const ResponsiveGridLayout = (Responsive);
 
 type Props = {
+    name: string,
     tiles: any[],
-    onLayout: (tiles: any[]) => void 
+    onLayout: (tiles: any[]) => void
 }
 
-export const Board: React.FC<Props> = ({ tiles, onLayout }) => {
-    const containerRef: any = useRef(null);
-    useEffect(() => {
-        containerRef?.current?.packery.on('layoutComplete', onLayout);
-    })
+export const Board: React.FC<Props> = ({ name, tiles, onLayout }) => {
 
     return (
-        <Packery
-            ref={containerRef}
-            className={'board'} // default ''
-            elementType={'div'} // default 'div'
-            options={{
-                transitionDuration: 0,
-            }} // default {}
-            disableImagesLoaded={false}> 
-            {tiles?.map(tile => <Tile tile={tile}></Tile>)}
-        </Packery >)    
+        <div className='board'>
+            <Typography variant='h5'>{name}</Typography>
+            <ResponsiveGridLayout
+                width={1024}>
+                {tiles.map((t, i) => <Tile
+                    data-grid={{
+                        i: t.id,
+                        x: (i*4) % 12,
+                        y: Infinity,
+                        w: 4, h: 2
+                    }}
+                    key={t.id}
+                    tile={t}></Tile>)}
+            </ResponsiveGridLayout>
+        </div>)
 }

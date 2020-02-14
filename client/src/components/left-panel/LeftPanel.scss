@@ -1,0 +1,20 @@
+.left-panel-container {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px -2px rgba(28,35,48,.04), 0 2px 4px 0 rgba(28,35,48,.04);
+    padding: 10px;
+    background-color: white;
+    justify-content: space-between;
+    border-radius: 2px;
+}
+
+.result-container {
+    margin: 10px 0 !important;
+    flex: 1 1 0;
+    overflow: auto;
+}
+
+.add-btn {
+    margin-top: auto;
+}

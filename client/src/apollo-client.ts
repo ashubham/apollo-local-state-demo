@@ -1,8 +1,9 @@
-import ApolloClient, { gql } from 'apollo-boost';
+import { ApolloClient, InMemoryCache, HttpLink, Reference } from '@apollo/client';
 
-export const client = new ApolloClient({
+export const client: any = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: new HttpLink({
     uri: 'http://localhost:4000/',
-    resolvers: {},
-  });
-  
-
+  }),
+  resolvers: {}
+});

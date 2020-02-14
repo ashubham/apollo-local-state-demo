@@ -1,11 +1,14 @@
 const { ApolloServer, gql } = require('apollo-server');
 const fetch = require('node-fetch');
 const uuid = require('uuid/v4');
+const { uniqueNamesGenerator,
+  adjectives, colors, animals, starWars } = require('unique-names-generator');
 
 const typeDefs = gql`
   type Query {
     resultSet(searchText: String!): ResultSet
     board(id: ID!): Board
+    getBoards: [Board]
   }
 
   type Mutation {
@@ -44,6 +47,9 @@ const typeDefs = gql`
 
   type Board {
     id: ID!
+    name: String
+    owner: String
+    modified: String
     tiles: [Tile!]!
   }
 
@@ -93,17 +99,19 @@ const resolvers = {
     },
     board: (root, { id }) => {
       return boards[id];
+    },
+    getBoards: () => {
+      return Object.values(boards).reverse();
     }
   },
   Mutation: {
     createBoard: (parent, args) => {
       const board = {
         id: uuid(),
-        tiles: [{
-          id: '883123',
-          photo: { id: '1232455', owner: 'asd', secret: 'asd', farm: 5, server: 6, title: 'asd' },
-          size: 'SMALL'
-        }]
+        name: uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals], separator: '-' }),
+        owner: uniqueNamesGenerator({ dictionaries: [starWars], length: 1 }),
+        modified: Date.now().toString(),
+        tiles: []
       }
       boards[board.id] = board;
       return board;
