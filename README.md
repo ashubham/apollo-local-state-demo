@@ -1,8 +1,4 @@
-# Redux to GraphQL
-
-The [Redux tutorial app](https://redux.js.org/advanced/example-reddit-api),  built with GraphQL & Apollo!
-
-## Development
+# Apollo with useContext/useReducer
 
 ### Server
 
