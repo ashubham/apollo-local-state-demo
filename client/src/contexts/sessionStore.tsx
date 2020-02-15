@@ -2,10 +2,12 @@ import React, {
     useContext,
     useReducer
 } from 'react';
+import { createContainer } from 'react-tracked';
 
 enum Actions {
     SET_BOARD,
-    SET_PAGE
+    SET_PAGE,
+    SET_SEARCH
 }
 
 export enum Page {
@@ -13,48 +15,52 @@ export enum Page {
     BOARDS
 }
 
-export const SessionContext = React.createContext<{state: any, dispatch: Function}>({
-    state: {},
-    dispatch: () => undefined
-});
+const { Provider, useTracked } = createContainer(() => useReducer((state, action) => {
+    switch (action.type) {
+        case Actions.SET_BOARD:
+            return {
+                ...state,
+                boardId: action.boardId
+            }
+        case Actions.SET_PAGE:
+            return {
+                ...state,
+                page: action.page
+            }
+        case Actions.SET_SEARCH:
+            return {
+                ...state,
+                searchText: action.searchText
+            }
+        default:
+            return state;
+    }
+}, {
+    boardId: '',
+    page: Page.HOME,
+    searchText: ''
+}));
+
 
 export const useSessionStore = () => {
-    let { state, dispatch } = useContext(SessionContext);
+    let [ state, dispatch ] = useTracked();
     let setBoardId = (boardId) => {
         dispatch({ type: Actions.SET_BOARD, boardId })
     };
     let setPage = (page: Page) => {
         dispatch({ type: Actions.SET_PAGE, page });
     }
-    return {
-        boardId: state.boardId,
-        page: state.page,
-        setBoardId,
-        setPage
-    };
-}
-
-export const SessionContextProvider = ({ children }) => {
-    const [state, dispatch] = useReducer((state, action) => {
-        switch (action.type) {
-            case Actions.SET_BOARD:
-                return {
-                    ...state,
-                    boardId: action.boardId
-                }
-            case Actions.SET_PAGE:
-                return {
-                    ...state,
-                    page: action.page
-                }
-            default:
-                return state;
+    let setSearchText = (searchText: string) => {
+        dispatch({ type: Actions.SET_SEARCH, searchText });
+    }
+    return [
+        state,
+        {
+            setBoardId,
+            setPage,
+            setSearchText
         }
-    }, {
-            boardId: '',
-            page: Page.HOME
-    });
-
-    return (<SessionContext.Provider value={{ state, dispatch }}
-        children={children}></SessionContext.Provider>)
+    ];
 }
+
+export const SessionContextProvider = Provider;

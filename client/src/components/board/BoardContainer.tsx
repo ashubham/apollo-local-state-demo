@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const BoardContainer: React.FC<Props> = ({ ...props }) => {
-    let { boardId } = useSessionStore();
+    let [{ boardId }] = useSessionStore();
 
     let { data, error, loading } = useQuery(GET_BOARD, {
         variables: { id: boardId }

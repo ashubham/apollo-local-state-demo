@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 
 const App: React.FC = () => {
   let [createBoard, { data }] = useMutation(CREATE_BOARD);
-  let { setBoardId, page, setPage } = useSessionStore();
+  let [{ page }, { setBoardId, setPage }] = useSessionStore();
   const classes = useStyles();
   const handlePageChange = (event, page) => {
     setPage(page);

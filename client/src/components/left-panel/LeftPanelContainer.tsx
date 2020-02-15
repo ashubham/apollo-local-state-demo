@@ -12,7 +12,7 @@ import _ from 'lodash';
 type Props = {}
 
 export const LeftPanelContainer: React.FC<Props> = () => {
-    const { boardId } = useSessionStore();
+    const [{ boardId }, { setSearchText: setSessionSearchText }] = useSessionStore();
     const [addPhotos, {error}] = useMutation(ADD_PHOTOS_TO_BOARD);
     const { showAlert } = useGlobalAlert();
 
@@ -22,6 +22,11 @@ export const LeftPanelContainer: React.FC<Props> = () => {
             variables: { searchText }
         });
     
+    const onSearch = (text) => {
+        setSearchText(text);
+        setSessionSearchText(text);
+    }
+    
     if (error) {
         showAlert({
             message: "Failed to add Photos to the Board.",
@@ -30,7 +35,7 @@ export const LeftPanelContainer: React.FC<Props> = () => {
     }
 
     return (<LeftPanel
-        onSearch={setSearchText}
+        onSearch={onSearch}
         isLoading={loading}
         isError={!!photoError}
         addPhotos={photos => addPhotos({

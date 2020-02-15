@@ -7,7 +7,7 @@ import { useSessionStore, Page } from '../../contexts/sessionStore';
 
 export const BoardList: React.FC = () => {
     const { data, error, loading } = useQuery(GET_BOARDS);
-    const { setPage, setBoardId } = useSessionStore();
+    const [ state, { setPage, setBoardId }] = useSessionStore();
     const { showAlert } = useGlobalAlert();
 
     function onBoardSelected(boardId) {

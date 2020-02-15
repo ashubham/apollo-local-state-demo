@@ -23,7 +23,9 @@
     "react-dom": "16.12.0",
     "react-grid-layout": "^0.17.1",
     "react-packery-component": "lucbelliveau/react-packery-component",
+    "react-tracked": "^1.0.6",
     "sass": "^1.25.0",
+    "source-map-explorer": "^2.2.2",
     "uuid": "^3.3.3"
   },
   "scripts": {
