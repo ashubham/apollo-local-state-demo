@@ -3,6 +3,8 @@ const fetch = require('node-fetch');
 const uuid = require('uuid/v4');
 const { uniqueNamesGenerator,
   adjectives, colors, animals, starWars } = require('unique-names-generator');
+const { photos } = require('./fakedata');
+
 
 const typeDefs = gql`
   type Query {
@@ -95,7 +97,9 @@ const resolvers = {
         `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=e494cbd806d338f440cfc999d6b9bacc&text=${searchText}&format=json&nojsoncallback=1`
       )
         .then(res => res.json())
-        .then(({ photos }) => photos);
+        .then(({ photos }) => {
+          return photos
+        });
     },
     board: (root, { id }) => {
       return boards[id];

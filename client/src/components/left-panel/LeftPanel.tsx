@@ -1,33 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { toggleProperty } from '../../util/util';
 import './LeftPanel.scss';
 import { Typography, List, ListItem, ListItemText } from '@material-ui/core';
 
+const ResultItem : React.FC<any> = React.memo(({photo, onDoubleClick, onClick, ...props}) => {
+    const _onDoubleClick = () => onDoubleClick([photo]);
+    const _onClick = () => onClick([photo]);
+
+    return <ListItem
+        {...props}
+        dense={true}
+        button={true}
+        onDoubleClick={_onDoubleClick}
+        onClick={_onClick}>
+            <ListItemText>{photo.title}</ListItemText>
+    </ListItem>
+});
+
 type Props = {
     photos: any[] | null | undefined,
-    addPhotos: (photos: any[]) => void,
+    didAddPhotos: (photos: any[]) => void,
     onSearch: (searchText: string) => void,
     isLoading: boolean,
     isError: boolean
 }
 
-export const LeftPanel: React.FC<Props> = ({ photos, isLoading, isError, addPhotos, onSearch }) => {
+export const LeftPanel: React.FC<Props> = React.memo(({ photos, isLoading, isError, didAddPhotos, onSearch }) => {
     const [selectedPhotos, setSelectedPhotos] = useState({});
 
-    function toggleSelectPhoto(photo) {
-        let newSelectedPhotos = toggleProperty(selectedPhotos, photo, photo.id);
-        setSelectedPhotos(newSelectedPhotos);
-    }
+    const toggleSelectPhoto = useCallback(photo => {
+        setSelectedPhotos(selectedPhotos => {
+            return toggleProperty(selectedPhotos, photo, photo.id);
+        });
+    }, []);
 
-    function _addPhotos(photos) {
+    const addPhotos = useCallback(photos => {
         setSelectedPhotos([]);
-        addPhotos(photos);
-    }
-
-
-    function getResults() {
+        didAddPhotos(photos);
+    }, [didAddPhotos]);
+    
+    const results = (() => {
         if (isLoading) {
             return 'Loading ...'
         }
@@ -37,16 +51,14 @@ export const LeftPanel: React.FC<Props> = ({ photos, isLoading, isError, addPhot
         }
 
         return <List className='result-container' dense={true}>
-            {photos?.map(photo => <ListItem
-                dense={true}
-                button={true}
+            {photos?.map(photo => <ResultItem
                 key={photo.id}
+                photo={photo}
                 selected={!!selectedPhotos[photo.id]}
-                onDoubleClick={() => addPhotos([photo])}
-                onClick={() => toggleSelectPhoto(photo)}>
-                <ListItemText>{photo.title}</ListItemText></ListItem>)}
+                onDoubleClick={addPhotos}
+                onClick={toggleSelectPhoto}></ResultItem>)}
         </List>;
-    }
+    })();
 
     return (
         <div className='left-panel-container'>
@@ -55,12 +67,12 @@ export const LeftPanel: React.FC<Props> = ({ photos, isLoading, isError, addPhot
                 variant='filled'
                 label='Search photos'
                 onChange={e => onSearch(e.target.value)} />
-            {getResults()}
+            {results}
             <Button className='add-btn'
                 variant="contained"
-                onClick={() => _addPhotos(Object.values(selectedPhotos))}>
+                onClick={() => addPhotos(Object.values(selectedPhotos))}>
                 Add Pictures
             </Button>
         </div>
     )
-}
+})

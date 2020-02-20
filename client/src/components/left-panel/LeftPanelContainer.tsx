@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, QueryResult } from '@apollo/client';
 import { GetResultSet, GetResultSetVariables } from '../../__generated__/GetResultSet';
 import { LeftPanel } from './LeftPanel';
@@ -13,8 +13,8 @@ type Props = {}
 
 export const LeftPanelContainer: React.FC<Props> = () => {
     const [{ boardId }, { setSearchText: setSessionSearchText }] = useSessionStore();
-    const [addPhotos, {error}] = useMutation(ADD_PHOTOS_TO_BOARD);
-    const { showAlert } = useGlobalAlert();
+    const [addPhotosToBoard, {error}] = useMutation(ADD_PHOTOS_TO_BOARD);
+    const showAlert = useGlobalAlert();
 
     const [searchText, setSearchText] = useState('');
     const { data, loading, error: photoError }: QueryResult<GetResultSet, GetResultSetVariables>
@@ -22,10 +22,21 @@ export const LeftPanelContainer: React.FC<Props> = () => {
             variables: { searchText }
         });
     
-    const onSearch = (text) => {
+    const onSearch = useCallback((text) => {
         setSearchText(text);
         setSessionSearchText(text);
-    }
+    }, []);
+
+    const addPhotos = useCallback(photos => addPhotosToBoard({
+        variables: {
+            input: {
+                id: boardId,
+                photos: photos.map((photo) => _.pick(photo, [
+                    'id', 'owner', 'secret', 'server', 'farm', 'title'
+                ]))
+            }
+        }
+    }), [boardId]);
     
     if (error) {
         showAlert({
@@ -38,14 +49,6 @@ export const LeftPanelContainer: React.FC<Props> = () => {
         onSearch={onSearch}
         isLoading={loading}
         isError={!!photoError}
-        addPhotos={photos => addPhotos({
-            variables: {
-                input: {
-                    id: boardId,
-                    photos: photos.map((photo) => _.pick(photo, [
-                        'id', 'owner', 'secret', 'server', 'farm', 'title'
-                    ]))
-                }
-        }})}
-        photos={data?.resultSet?.photos.slice(0, 50)}></LeftPanel>)
+        didAddPhotos={addPhotos}
+        photos={data?.resultSet?.photos}></LeftPanel>)
 }
