@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { ApolloProvider, gql } from '@apollo/client';
-import { SessionContextProvider } from './contexts/sessionStore';
+import { SessionContextProvider } from './contexts/globalClientState';
 
 import App from './App';
 import { client } from './apollo-client';

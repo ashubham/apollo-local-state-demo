@@ -24,10 +24,11 @@ type Props = {
     didAddPhotos: (photos: any[]) => void,
     onSearch: (searchText: string) => void,
     isLoading: boolean,
-    isError: boolean
+    isError: boolean,
+    className?: string
 }
 
-export const LeftPanel: React.FC<Props> = React.memo(({ photos, isLoading, isError, didAddPhotos, onSearch }) => {
+export const LeftPanel: React.FC<Props> = React.memo(({ photos, isLoading, isError, didAddPhotos, onSearch, ...props }) => {
     const [selectedPhotos, setSelectedPhotos] = useState({});
 
     const toggleSelectPhoto = useCallback(photo => {
@@ -50,10 +51,13 @@ export const LeftPanel: React.FC<Props> = React.memo(({ photos, isLoading, isErr
             return 'Error getting photos'
         }
 
+        let prop1 = { a: 1, b: 2 };
+
         return <List className='result-container' dense={true}>
             {photos?.map(photo => <ResultItem
                 key={photo.id}
                 photo={photo}
+                prop1={prop1}
                 selected={!!selectedPhotos[photo.id]}
                 onDoubleClick={addPhotos}
                 onClick={toggleSelectPhoto}></ResultItem>)}

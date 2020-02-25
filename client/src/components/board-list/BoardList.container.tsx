@@ -3,11 +3,11 @@ import { BoardList as BoardListInner } from './BoardList';
 import { useQuery } from '@apollo/client';
 import { GET_BOARDS } from '../../services/board-service';
 import { useGlobalAlert } from '../../contexts/alert';
-import { useSessionStore, Page } from '../../contexts/sessionStore';
+import { useGlobalClientState, Page } from '../../contexts/globalClientState';
 
 export const BoardList: React.FC = () => {
     const { data, error, loading } = useQuery(GET_BOARDS);
-    const [ state, { setPage, setBoardId }] = useSessionStore();
+    const [ state, { setPage, setBoardId }] = useGlobalClientState();
     const showAlert  = useGlobalAlert();
 
     function onBoardSelected(boardId) {

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, QueryResult } from '@apollo/client';
 import { GetResultSet, GetResultSetVariables } from '../../__generated__/GetResultSet';
 import { LeftPanel } from './LeftPanel';
-import { useSessionStore } from '../../contexts/sessionStore';
+import { useGlobalClientState } from '../../contexts/globalClientState';
 import { useGlobalAlert } from '../../contexts/alert';
 
 import { ADD_PHOTOS_TO_BOARD } from '../../services/board-service';
@@ -12,7 +12,7 @@ import _ from 'lodash';
 type Props = {}
 
 export const LeftPanelContainer: React.FC<Props> = () => {
-    const [{ boardId }, { setSearchText: setSessionSearchText }] = useSessionStore();
+    const [{ boardId }, { setSearchText: setSessionSearchText }] = useGlobalClientState();
     const [addPhotosToBoard, {error}] = useMutation(ADD_PHOTOS_TO_BOARD);
     const showAlert = useGlobalAlert();
 

@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_BOARD } from '../../services/board-service';
 import { Board } from './Board';
-import { useSessionStore } from '../../contexts/sessionStore';
+import { useGlobalClientState } from '../../contexts/globalClientState';
 import { Typography } from '@material-ui/core';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const BoardContainer: React.FC<Props> = ({ ...props }) => {
-    let [{ boardId }] = useSessionStore();
+    let [{ boardId }] = useGlobalClientState();
 
     let { data, error, loading } = useQuery(GET_BOARD, {
         variables: { id: boardId }

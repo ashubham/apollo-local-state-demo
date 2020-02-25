@@ -42,7 +42,7 @@ const { Provider, useTracked } = createContainer(() => useReducer((state, action
 }));
 
 
-export const useSessionStore = () => {
+export const useGlobalClientState = () => {
     let [ state, dispatch ] = useTracked();
     let setBoardId = (boardId) => {
         dispatch({ type: Actions.SET_BOARD, boardId })

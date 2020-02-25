@@ -12,7 +12,7 @@ import { getBoardIdFromPath } from './util/util';
 
 import './App.scss';
 
-import { useSessionStore, Page } from './contexts/sessionStore';
+import { useGlobalClientState, Page } from './contexts/globalClientState';
 import { LeftPanel } from './components/left-panel';
 import { Board } from './components/board';
 import { BoardList } from './components/board-list/BoardList.container'
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 
 const App: React.FC = () => {
   let [createBoard, { data }] = useMutation(CREATE_BOARD);
-  let [{ page }, { setBoardId, setPage }] = useSessionStore();
+  let [{ page }, { setBoardId, setPage }] = useGlobalClientState();
   const classes = useStyles();
   const handlePageChange = (event, page) => {
     setPage(page);
